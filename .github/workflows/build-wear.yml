@@ -1,5 +1,5 @@
 
-name: Build Wear OS APK
+name: Build Dictate Keyboard APKs
 
 on:
   workflow_dispatch:
@@ -23,13 +23,21 @@ jobs:
         with:
           packages: platform-tools
 
-      - name: Build Wear OS APK
+      - name: Build Phone and Wear APK
         run: |
           chmod +x gradlew
-          ./gradlew :wear:assembleDebug --stacktrace
+          ./gradlew :app:assembleDebug :wear:assembleDebug --stacktrace
 
-      - name: Upload APK
+      - name: Upload Phone APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: DictateKeyboard-Phone
+          path: app/build/outputs/apk/**/*.apk
+          if-no-files-found: error
+
+      - name: Upload Wear APK
         uses: actions/upload-artifact@v4
         with:
           name: DictateKeyboard-WearOS
-          path: wear/build/outputs/apk/debug/*.apk
+          path: wear/build/outputs/apk/**/*.apk
+          if-no-files-found: error
